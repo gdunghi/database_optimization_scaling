@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:17.5
+    restart: always
+    environment:
+      TZ: "Asia/Bangkok"
+      PGTZ: "Asia/Bangkok"
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    command: >
+      postgres
+      -c timezone='Asia/Bangkok'
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "8G"
+        reservations:
+          cpus: "2"
+          memory: "500M"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"

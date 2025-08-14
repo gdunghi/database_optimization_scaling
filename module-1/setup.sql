@@ -1,3 +1,5 @@
+--- extension db Database client
+
 CREATE TABLE customers (
     id SERIAL PRIMARY KEY,
     name TEXT

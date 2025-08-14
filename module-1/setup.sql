@@ -23,3 +23,12 @@ FROM generate_series(1, 1000000);
 
 --- สร้าง Index
 CREATE INDEX idx_orders_customer ON orders(customer_id);
+
+
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT * FROM orders WHERE amount > 900;
+
+
+
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT * FROM orders WHERE customer_id = 500;

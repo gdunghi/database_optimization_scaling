@@ -2,7 +2,7 @@
 
 CREATE TABLE customers (
     id SERIAL PRIMARY KEY,
-    name TEXT
+    name VARCHAR(50)
 );
 
 CREATE TABLE orders (

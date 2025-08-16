@@ -10,15 +10,16 @@
 สมมติว่าเรามีตาราง orders ที่เก็บข้อมูลยอดขายรายวัน และต้องการแบ่งตามปีและเดือน
 
 ```sql
+CREATE SEQUENCE orders_id_seq;
 
 -- สร้างตารางหลัก (Parent Table) ที่มีการแบ่งพาร์ทิชันตามวันที่
 CREATE TABLE orders (
-    order_id SERIAL,
+    order_id BIGINT DEFAULT nextval('orders_id_seq'),
     customer_id INT NOT NULL,
     order_date DATE NOT NULL,
     order_total DECIMAL(10, 2) NOT NULL,
     status VARCHAR(50) NOT NULL,
-    PRIMARY KEY (order_id, order_date)
+    PRIMARY KEY (order_date, order_id) 
 ) PARTITION BY RANGE (order_date);
 
 -- สร้างพาร์ทิชันย่อยสำหรับแต่ละเดือนของปี 2023 และปี 2024
@@ -156,7 +157,7 @@ Execution Time: 0.393 ms
 ```sql
 -- สร้างตารางหลัก
 CREATE TABLE large_events (
-    event_id UUID , -- UUID เป็นตัวอย่างของ ID ที่กระจายตัว
+    event_id SERIAL , 
     event_type VARCHAR(50) NOT NULL,
     event_timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
     payload JSONB
@@ -172,7 +173,7 @@ CREATE TABLE large_events_p3 PARTITION OF large_events FOR VALUES WITH (MODULUS 
 
 INSERT INTO large_events (event_id, event_type, event_timestamp, payload)
 SELECT
-    gen_random_uuid() AS event_id, -- สร้าง UUID แบบสุ่ม
+    s,
     CASE floor(random() * 4) -- สุ่มประเภท Event
         WHEN 0 THEN 'LOGIN'
         WHEN 1 THEN 'LOGOUT'

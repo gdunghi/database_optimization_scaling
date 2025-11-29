@@ -52,6 +52,9 @@ SELECT COUNT(*) FROM product_logs WHERE event_timestamp BETWEEN '2024-06-01' AND
 UPDATE product_logs SET details = jsonb_set(details, '{is_processed}', 'true') WHERE event_type = 'VIEW' AND log_id % 10 = 0;
 
 
+SET work_mem = '1MB'; 
+
+
 SELECT count(*) from (
     SELECT * FROM product_logs  order by user_id desc
 );
@@ -76,3 +79,15 @@ ORDER BY
     (shared_blks_read + local_blks_read + temp_blks_read) DESC -- เรียงตามการอ่านดิสก์รวม
 LIMIT 10;
 
+
+
+SELECT round((100 * total_exec_time /
+    sum(total_exec_time)
+    OVER ())::numeric, 2) percent,
+    round(total_exec_time::numeric, 2) AS total,
+    calls,
+    round(mean_exec_time::numeric, 2) AS mean,
+    substring(query, 1, 100)
+FROM  pg_stat_statements
+ORDER BY total_exec_time DESC
+LIMIT 20;

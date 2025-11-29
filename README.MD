@@ -44,3 +44,6 @@
 
 *** download data
     https://drive.google.com/file/d/1nNXcTjhJK6EzJdzaZvdoJDrYj_V61rq8/view?usp=drive_link
+
+## credit: data air lab 
+        - https://github.com/hettie-d/postgres_air

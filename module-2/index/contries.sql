@@ -256,28 +256,3 @@ SELECT
     chr(65 + floor(random() * 26)::int)
 ) AS iso
 FROM generate_series(1, 5000000);
-
-CREATE INDEX idx_name_gist_trgm ON Countries USING GIST (name gist_trgm_ops);
-
-EXPLAIN SELECT * FROM countries WHERE name % 'United Sa';
-
-EXPLAIN SELECT * FROM countries WHERE name like '%United Sa%'
-
-CREATE INDEX idx_name_gist_trgm ON Countries USING GIST (name gist_trgm_ops);
-
-DROP index idx_name_gist_trgm ;
-
-CREATE INDEX idx_name_gist_trgm ON Countries USING GIN (name gin_trgm_ops);
-
-
-ALTER TABLE countries ADD COLUMN tsv tsvector;
-
-update countries set tsv = to_tsvector('english', coalesce(name,''));
-
-EXPLAIN ANALYZE 
-select *
-FROM countries
-WHERE tsv @@ to_tsquery('english', 'United & Outlying');
-
-CREATE INDEX idx_countries_tsv_gin
-ON countries USING GIN(tsv);

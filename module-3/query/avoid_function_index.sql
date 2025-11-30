@@ -1,11 +1,42 @@
-CREATE TABLE orders_with_generated_date (
+DROP table if EXISTS orders_with_generated_date;
+
+CREATE TABLE orders_with_timestamp (
     order_id SERIAL PRIMARY KEY,
     customer_id INT NOT NULL,
     order_timestamp TIMESTAMP NOT NULL
 );
 
-DROP table orders_with_generated_date;
 
+INSERT INTO orders_with_timestamp (customer_id, order_timestamp)
+SELECT
+    (random() * 1000 + 1)::int AS customer_id,
+    timestamp '2024-01-01 00:00:00' + (random() * interval '365 days') AS order_timestamp
+FROM generate_series(1, 1000000);
+
+
+
+-- สร้าง index ด้วย order_timestamp
+
+CREATE INDEX idx_order_date_time ON orders_with_timestamp (order_timestamp);
+
+EXPLAIN ANALYZE SELECT * FROM orders_with_timestamp WHERE order_timestamp::date = DATE '2024-08-01';
+--- index ไม่ถูกใช้งาน
+
+
+
+
+-- สร้าง index ด้วย function
+CREATE INDEX idx_order_date ON 
+	orders_with_timestamp ((order_timestamp::date));
+
+
+EXPLAIN ANALYZE SELECT * FROM orders_with_timestamp 
+	WHERE order_timestamp::date = DATE '2024-08-01';
+--- index ถูกใช้งาก
+
+
+
+-- GENERATED add column เพิ่มได้
 ALTER table orders_with_generated_date add COLUMN order_date DATE GENERATED ALWAYS AS (order_timestamp::date) STORED;
 
 drop index idx_order_date_fn;

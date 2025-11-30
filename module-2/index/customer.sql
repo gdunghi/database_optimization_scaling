@@ -23,6 +23,9 @@ SELECT
     (random() * 10000 + 50)::INT as customer_id
 FROM generate_series(1, 5000000) s; 
 
+
+
+--- unkonw
 create index customer_orders_idx on customer_orders (customer_id);
 
 

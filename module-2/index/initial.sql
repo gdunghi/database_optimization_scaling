@@ -21,8 +21,3 @@ SELECT (random()*10000)::INT, (random()*1000)::NUMERIC, NOW() - (random()*interv
 FROM generate_series(1, 1000000);
 
 
-CREATE TABLE bookings (
-    id BIGSERIAL PRIMARY KEY,
-    start_time TIMESTAMPTZ NOT NULL,
-    end_time   TIMESTAMPTZ NOT NULL
-);
